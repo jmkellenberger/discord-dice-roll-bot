@@ -1,39 +1,8 @@
 defmodule WitchspaceDiscord.Commands.Roll do
-  alias WitchspaceDiscord.DiceHelpers
+  @name "roll"
+  @description "Rolls dice from a valid dice expression, like 2d6+3"
 
-  @behaviour Nosedrum.ApplicationCommand
-  use WitchspaceDiscord.SlashCommand
-
-  @impl WitchspaceDiscord.SlashCommand
-  def name, do: "roll"
-
-  @impl Nosedrum.ApplicationCommand
-  def description() do
-    "Rolls dice from a valid dice expression, like 2d6+3"
-  end
-
-  @impl Nosedrum.ApplicationCommand
-  def command(interaction) do
-    case Droll.roll(fetch_opt(interaction, "dice", "2d6")) do
-      {:ok, roll} ->
-        [
-          content:
-            "Rolled #{roll.formula}, got: **#{roll.total}** (#{Enum.join(roll.rolls, " + ")}#{DiceHelpers.format_dice_modifier(roll)})",
-          ephemeral?: fetch_opt(interaction, "private", false)
-        ]
-
-      {:error, err} ->
-        [
-          content: err,
-          ephemeral?: true
-        ]
-    end
-  end
-
-  @impl Nosedrum.ApplicationCommand
-  def type() do
-    :slash
-  end
+  use WitchspaceDiscord.Command
 
   @impl Nosedrum.ApplicationCommand
   def options() do
@@ -51,5 +20,22 @@ defmodule WitchspaceDiscord.Commands.Roll do
         required: false
       }
     ]
+  end
+
+  @impl Nosedrum.ApplicationCommand
+  def command(interaction) do
+    case Droll.roll(Helpers.fetch_opt(interaction, "dice", "2d6")) do
+      {:ok, roll} ->
+        [
+          content: Helpers.Dice.format_roll(roll),
+          ephemeral?: Helpers.fetch_opt(interaction, "private", false)
+        ]
+
+      {:error, err} ->
+        [
+          content: err,
+          ephemeral?: true
+        ]
+    end
   end
 end

@@ -20,12 +20,7 @@ defmodule WitchspaceDiscord.InteractionConsumer do
   end
 
   defp register_commands(guild_id) do
-    with {:ok, list} <- :application.get_key(:witchspace, :modules) do
-      list
-      |> Enum.filter(
-        &match?(["WitchspaceDiscord", "Commands", _], &1 |> Module.split() |> Enum.take(3))
-      )
-      |> Enum.each(fn m -> apply(m, :register, [guild_id]) end)
-    end
+    WitchspaceDiscord.Helpers.list_command_modules()
+    |> Enum.each(fn m -> apply(m, :register, [guild_id]) end)
   end
 end

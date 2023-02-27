@@ -37,6 +37,8 @@ defmodule Witchspace.Campaigns do
   """
   def get_campaign!(id), do: Repo.get!(Campaign, id)
 
+  def get_campaign_by_guild_id(guild_id), do: Repo.get_by(Campaign, guild_id: guild_id)
+
   @doc """
   Creates a campaign.
 
