@@ -5,7 +5,7 @@ defmodule Witchspace.Economy do
 
   import Ecto.Query, warn: false
   alias Witchspace.Repo
-
+  alias Witchspace.Economy.Transaction
   alias Witchspace.Economy.Wallet
 
   @doc """
@@ -37,7 +37,8 @@ defmodule Witchspace.Economy do
       ** (Ecto.NoResultsError)
 
   """
-  def get_wallet!(campaign, id), do: Repo.get_by!(Wallet, campaign_id: campaign.id, id: id)
+  def get_wallet!(campaign, id),
+    do: Repo.get_by!(Wallet, campaign_id: campaign.id, id: id)
 
   @doc """
   Creates a wallet.
@@ -105,8 +106,6 @@ defmodule Witchspace.Economy do
     Wallet.changeset(wallet, attrs)
   end
 
-  alias Witchspace.Economy.Transaction
-
   @doc """
   Returns the list of transactions.
 
@@ -119,6 +118,12 @@ defmodule Witchspace.Economy do
   def list_transactions(wallet) do
     from(v in Transaction, where: [wallet_id: ^wallet.id], order_by: [asc: :id])
     |> Repo.all()
+  end
+
+  def get_last_transaction(wallet) do
+    from(v in Transaction, where: [wallet_id: ^wallet.id], order_by: [desc: :id])
+    |> Repo.all()
+    |> List.first(nil)
   end
 
   @doc """
@@ -201,5 +206,40 @@ defmodule Witchspace.Economy do
   """
   def change_transaction(%Transaction{} = transaction, attrs \\ %{}) do
     Transaction.changeset(transaction, attrs)
+  end
+
+  def current_balance(wallet) do
+    wallet
+    |> get_last_transaction()
+    |> calculate_balance()
+  end
+
+  defp calculate_balance(%{opening_balance: bal, amount: amount}), do: bal + amount
+  defp calculate_balance(nil), do: 0
+
+  def create_withdrawal(wallet, amount, reason \\ "WITHDRAWAL") when amount > 0 do
+    wallet = Repo.preload(wallet, [:transactions, :campaign])
+
+    attrs = %{
+      amount: -amount,
+      date: wallet.campaign.date,
+      opening_balance: current_balance(wallet),
+      reason: reason
+    }
+
+    create_transaction(wallet, attrs)
+  end
+
+  def create_deposit(wallet, amount, reason \\ "DEPOSIT") when amount > 0 do
+    wallet = Repo.preload(wallet, [:transactions, :campaign])
+
+    attrs = %{
+      amount: amount,
+      date: wallet.campaign.date,
+      opening_balance: current_balance(wallet),
+      reason: reason
+    }
+
+    create_transaction(wallet, attrs)
   end
 end

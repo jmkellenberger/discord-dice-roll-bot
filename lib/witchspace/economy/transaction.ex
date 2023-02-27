@@ -17,6 +17,7 @@ defmodule Witchspace.Economy.Transaction do
     transaction
     |> cast(attrs, [:date, :opening_balance, :amount, :reason])
     |> validate_required([:date, :opening_balance, :amount])
+    |> check_constraint(:amount, name: :balance_cannot_be_negative)
     |> unique_constraint(:wallet_id,
       name: :transactions_date_opening_balance_amount_wallet_id_index
     )
