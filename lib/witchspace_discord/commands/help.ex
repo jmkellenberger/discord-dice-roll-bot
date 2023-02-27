@@ -2,7 +2,7 @@ defmodule WitchspaceDiscord.Commands.Help do
   @name "help"
   @description "Displays a list of available commands."
 
-  use WitchspaceDiscord.Command
+  use WitchspaceDiscord.Interaction
 
   @impl Nosedrum.ApplicationCommand
   def command(_interaction) do

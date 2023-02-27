@@ -2,7 +2,7 @@ defmodule WitchspaceDiscord.Commands.Roll do
   @name "roll"
   @description "Rolls dice from a valid dice expression, like 2d6+3"
 
-  use WitchspaceDiscord.Command
+  use WitchspaceDiscord.Interaction
 
   @impl Nosedrum.ApplicationCommand
   def options() do

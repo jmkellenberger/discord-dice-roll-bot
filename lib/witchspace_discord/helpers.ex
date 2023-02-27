@@ -10,6 +10,8 @@ defmodule WitchspaceDiscord.Helpers do
     end
   end
 
+  def fetch_opt(interaction, opt, default \\ nil)
+
   def fetch_opt(%Interaction{data: %{options: nil}}, _opt, default),
     do: default
 
@@ -29,5 +31,14 @@ defmodule WitchspaceDiscord.Helpers do
       list
       |> Enum.filter(&match?([@app, @command_module, _], &1 |> Module.split() |> Enum.take(3)))
     end
+  end
+
+  def format_date(%{day: day, year: year}) do
+    "#{day}-#{year}"
+  end
+
+  def format_changeset_errors(%Ecto.Changeset{errors: errors}) do
+    Enum.map(errors, fn {k, {msg, _}} -> "**#{Phoenix.Naming.humanize(k)}**: #{msg}" end)
+    |> Enum.join("\n")
   end
 end

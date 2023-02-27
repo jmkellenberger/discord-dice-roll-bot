@@ -2,7 +2,7 @@ defmodule WitchspaceDiscord.Commands.Throw do
   @name "throw"
   @description "Throws 2d6 against a target number."
 
-  use WitchspaceDiscord.Command
+  use WitchspaceDiscord.Interaction
 
   @impl Nosedrum.ApplicationCommand
   def options() do

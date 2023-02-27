@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Command do
+defmodule WitchspaceDiscord.Interaction do
   defmacro __using__(_) do
     quote location: :keep do
       alias WitchspaceDiscord.Helpers

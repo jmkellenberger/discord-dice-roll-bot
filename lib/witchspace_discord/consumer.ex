@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.InteractionConsumer do
+defmodule WitchspaceDiscord.Consumer do
   use Nostrum.Consumer
 
   @guild_id Application.compile_env(:witchspace, :test_guild)
