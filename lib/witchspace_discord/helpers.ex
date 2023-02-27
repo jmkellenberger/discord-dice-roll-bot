@@ -33,6 +33,10 @@ defmodule WitchspaceDiscord.Helpers do
     "#{day}-#{year}"
   end
 
+  def format_date_verbose(%{day: day, year: year}) do
+    "Day #{day}, Year #{year}"
+  end
+
   def format_changeset_errors(%Ecto.Changeset{errors: errors}) do
     Enum.map(errors, fn {k, {msg, _}} -> "**#{Phoenix.Naming.humanize(k)}**: #{msg}" end)
     |> Enum.join("\n")
