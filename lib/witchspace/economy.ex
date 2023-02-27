@@ -40,6 +40,9 @@ defmodule Witchspace.Economy do
   def get_wallet!(campaign, id),
     do: Repo.get_by!(Wallet, campaign_id: campaign.id, id: id)
 
+  def get_wallet_by_name(campaign, name),
+    do: Repo.get_by(Wallet, campaign_id: campaign.id, name: name)
+
   @doc """
   Creates a wallet.
 

@@ -21,6 +21,9 @@ defmodule WitchspaceDiscord.Consumer do
 
   defp register_commands(guild_id) do
     WitchspaceDiscord.Helpers.list_command_modules()
-    |> Enum.each(fn m -> apply(m, :register, [guild_id]) end)
+    |> Enum.each(fn m ->
+      apply(m, :register, [guild_id])
+      :timer.sleep(1500)
+    end)
   end
 end

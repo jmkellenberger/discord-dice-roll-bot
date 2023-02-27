@@ -13,6 +13,20 @@ defmodule WitchspaceDiscord.Helpers do
     end
   end
 
+  def fetch_wallet(guild_id, name) do
+    with {:ok, campaign} <- fetch_campaign(guild_id),
+         %Witchspace.Economy.Wallet{} = wallet <-
+           Witchspace.Economy.get_wallet_by_name(campaign, name) do
+      {:ok, wallet}
+    else
+      nil ->
+        {:error, "Wallet not found with name: #{name}."}
+
+      err ->
+        err
+    end
+  end
+
   def fetch_opt(interaction, opt, default \\ nil)
 
   def fetch_opt(%Interaction{data: %{options: nil}}, _opt, default),

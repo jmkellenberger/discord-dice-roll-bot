@@ -7,12 +7,7 @@ defmodule WitchspaceDiscord.ConsumerSupervisor do
 
   @impl true
   def init(_args) do
-    children =
-      for n <- 1..System.schedulers_online(),
-          do:
-            Supervisor.child_spec({WitchspaceDiscord.Consumer, []},
-              id: {:witchspace_discord, :consumer, n}
-            )
+    children = [WitchspaceDiscord.Consumer]
 
     Supervisor.init(children, strategy: :one_for_one)
   end

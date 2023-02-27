@@ -25,8 +25,8 @@ defmodule WitchspaceDiscord.Commands.NewWallet do
            {:ok, wallet} <- Witchspace.Economy.create_wallet(campaign, name) do
         "Success! Account: #{wallet.name} initialized. The current balance is **#{Witchspace.Economy.current_balance(wallet)}**."
       else
-        {:error, changeset} ->
-          Helpers.format_changeset_errors(changeset)
+        {:error, %Ecto.Changeset{} = c} ->
+          Helpers.format_changeset_errors(c)
 
         {:error, err} ->
           err
