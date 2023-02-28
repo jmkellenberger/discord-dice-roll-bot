@@ -6,12 +6,10 @@ defmodule WitchspaceDiscord.Dice.Interactions.HiddenRoll do
   alias WitchspaceDiscord.Dice.Interactions.Roll
 
   @impl InteractionBehaviour
-  @spec get_command() :: ApplicationCommand.application_command_map()
   def get_command,
     do: %{Roll.get_command() | name: "rpriv", description: "Privately rolls a dice expression"}
 
   @impl InteractionBehaviour
-  @spec handle_interaction(Interaction.t(), InteractionBehaviour.interaction_options()) :: map()
   def handle_interaction(interaction, options) do
     Roll.handle_interaction(interaction, options)
     |> private()

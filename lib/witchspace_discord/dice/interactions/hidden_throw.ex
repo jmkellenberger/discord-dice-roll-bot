@@ -7,7 +7,6 @@ defmodule WitchspaceDiscord.Dice.Interactions.HiddenThrow do
   alias WitchspaceDiscord.Dice.Interactions.Throw
 
   @impl InteractionBehaviour
-  @spec get_command() :: ApplicationCommand.application_command_map()
   def get_command,
     do: %{
       Throw.get_command()
@@ -16,7 +15,6 @@ defmodule WitchspaceDiscord.Dice.Interactions.HiddenThrow do
     }
 
   @impl InteractionBehaviour
-  @spec handle_interaction(Interaction.t(), InteractionBehaviour.interaction_options()) :: map()
   def handle_interaction(interaction, options) do
     Throw.handle_interaction(interaction, options)
     |> private()

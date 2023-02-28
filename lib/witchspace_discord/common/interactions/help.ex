@@ -7,7 +7,6 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
   use WitchspaceDiscord.Interaction
 
   @impl InteractionBehaviour
-  @spec get_command() :: ApplicationCommand.application_command_map()
   def get_command,
     do: %{
       name: "help",
@@ -15,7 +14,6 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
     }
 
   @impl InteractionBehaviour
-  @spec handle_interaction(Interaction.t(), InteractionBehaviour.interaction_options()) :: map()
   def handle_interaction(_interaction, _options) do
     embed =
       Enum.reduce(

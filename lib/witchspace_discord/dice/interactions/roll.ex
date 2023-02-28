@@ -7,7 +7,6 @@ defmodule WitchspaceDiscord.Dice.Interactions.Roll do
   alias WitchspaceDiscord.Dice.Helpers
 
   @impl InteractionBehaviour
-  @spec get_command() :: ApplicationCommand.application_command_map()
   def get_command,
     do: %{
       name: "roll",
@@ -22,7 +21,6 @@ defmodule WitchspaceDiscord.Dice.Interactions.Roll do
     }
 
   @impl InteractionBehaviour
-  @spec handle_interaction(Interaction.t(), InteractionBehaviour.interaction_options()) :: map()
   def handle_interaction(_interaction, options) do
     dice =
       case get_option(options, "dice") do

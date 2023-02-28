@@ -7,7 +7,6 @@ defmodule WitchspaceDiscord.Dice.Interactions.Throw do
   alias WitchspaceDiscord.Dice.Helpers
 
   @impl InteractionBehaviour
-  @spec get_command() :: ApplicationCommand.application_command_map()
   def get_command,
     do: %{
       name: "throw",
@@ -43,7 +42,6 @@ defmodule WitchspaceDiscord.Dice.Interactions.Throw do
     }
 
   @impl InteractionBehaviour
-  @spec handle_interaction(Interaction.t(), InteractionBehaviour.interaction_options()) :: map()
   def handle_interaction(_interaction, options) do
     {target, _autocomplete} = get_option(options, "target")
 
