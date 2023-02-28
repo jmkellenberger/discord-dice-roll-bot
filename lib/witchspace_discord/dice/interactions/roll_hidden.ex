@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Dice.Interactions.HiddenRoll do
+defmodule WitchspaceDiscord.Dice.Interactions.RollHidden do
   @moduledoc """
   Handles /rpriv slash command
   """

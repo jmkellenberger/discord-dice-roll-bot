@@ -8,11 +8,20 @@ defmodule WitchspaceDiscord.Interactions do
   alias Nostrum.Struct.Interaction
 
   alias WitchspaceDiscord.Common.Interactions.{About, Help}
-  alias WitchspaceDiscord.Dice.Interactions.{HiddenRoll, HiddenThrow, Roll, Throw}
+  alias WitchspaceDiscord.Campaign.Interactions.{Campaign}
+
+  alias WitchspaceDiscord.Dice.Interactions.{
+    Roll,
+    RollHidden,
+    RollShort,
+    Throw,
+    ThrowHidden,
+    ThrowShort
+  }
 
   @spec list_commands :: any()
   def list_commands do
-    [About, Help, HiddenThrow, HiddenRoll, Roll, Throw]
+    [About, Campaign, Help, Roll, RollHidden, RollShort, Throw, ThrowHidden, ThrowShort]
     |> Enum.map(& &1.get_command())
   end
 
@@ -64,6 +73,9 @@ defmodule WitchspaceDiscord.Interactions do
   defp call_interaction(interaction, {"about", opt}),
     do: About.handle_interaction(interaction, opt)
 
+  defp call_interaction(interaction, {"campaign", opt}),
+    do: Campaign.handle_interaction(interaction, opt)
+
   defp call_interaction(interaction, {"help", opt}),
     do: Help.handle_interaction(interaction, opt)
 
@@ -71,13 +83,19 @@ defmodule WitchspaceDiscord.Interactions do
     do: Roll.handle_interaction(interaction, opt)
 
   defp call_interaction(interaction, {"rpriv", opt}),
-    do: HiddenRoll.handle_interaction(interaction, opt)
+    do: RollHidden.handle_interaction(interaction, opt)
+
+  defp call_interaction(interaction, {"r", opt}),
+    do: RollShort.handle_interaction(interaction, opt)
 
   defp call_interaction(interaction, {"throw", opt}),
     do: Throw.handle_interaction(interaction, opt)
 
   defp call_interaction(interaction, {"tpriv", opt}),
-    do: HiddenThrow.handle_interaction(interaction, opt)
+    do: ThrowHidden.handle_interaction(interaction, opt)
+
+  defp call_interaction(interaction, {"t", opt}),
+    do: ThrowShort.handle_interaction(interaction, opt)
 
   defp call_interaction(_interaction, _data),
     do: raise("Unknown command")

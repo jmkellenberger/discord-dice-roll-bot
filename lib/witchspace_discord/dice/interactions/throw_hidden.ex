@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Dice.Interactions.HiddenThrow do
+defmodule WitchspaceDiscord.Dice.Interactions.ThrowHidden do
   @moduledoc """
   Handles /tpriv slash command
   """
