@@ -9,7 +9,6 @@ defmodule WitchspaceDiscord.Interactions do
 
   alias WitchspaceDiscord.Common.Interactions.{About, Help}
   alias WitchspaceDiscord.Dice.Interactions.{Roll}
-  alias WitchspaceDiscord.Helpers
 
   @spec list_commands :: any()
   def list_commands do
@@ -47,7 +46,7 @@ defmodule WitchspaceDiscord.Interactions do
     Logger.info("Interaction received")
 
     try do
-      data = Helpers.parse_interaction_data(interaction.data)
+      data = parse_interaction_data(interaction.data)
       response = call_interaction(interaction, data)
 
       Nostrum.Api.create_interaction_response(interaction, response)
@@ -73,4 +72,46 @@ defmodule WitchspaceDiscord.Interactions do
 
   defp call_interaction(_interaction, _data),
     do: raise("Unknown command")
+
+  defp parse_interaction_data(interaction_data) when is_binary(interaction_data.custom_id) do
+    [command_string, options_string] = String.split(interaction_data.custom_id, "|")
+
+    options =
+      String.split(options_string, ":")
+      |> Enum.chunk_every(2)
+      |> Enum.reduce([], fn [name, value], acc ->
+        acc ++ [%{name: name, value: value, focused: false}]
+      end)
+
+    {command_string, options}
+  end
+
+  defp parse_interaction_data(interaction_data) do
+    options = parse_list_of_options(interaction_data.options)
+
+    {interaction_data.name, options}
+  end
+
+  defp parse_list_of_options(options) when is_nil(options), do: []
+
+  defp parse_list_of_options(options) do
+    Enum.flat_map(options, fn option ->
+      case option.type do
+        1 -> parse_sub_command(option)
+        _ -> [parse_data_option(option)]
+      end
+    end)
+  end
+
+  defp parse_sub_command(option) do
+    [%{name: option.name, value: "", focused: false}] ++ parse_list_of_options(option.options)
+  end
+
+  defp parse_data_option(option) do
+    %{
+      name: option.name,
+      value: option.value,
+      focused: if(is_nil(Map.get(option, :focused)), do: false, else: option.focused)
+    }
+  end
 end

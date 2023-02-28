@@ -4,11 +4,7 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
   """
 
   import Nostrum.Struct.Embed
-  alias Nostrum.Struct.{ApplicationCommand, Interaction}
-
-  alias WitchspaceDiscord.{Interactions, InteractionBehaviour}
-
-  @behaviour InteractionBehaviour
+  use WitchspaceDiscord.Interaction
 
   @impl InteractionBehaviour
   @spec get_command() :: ApplicationCommand.application_command_map()
@@ -23,14 +19,13 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
   def handle_interaction(_interaction, _options) do
     embed =
       Enum.reduce(
-        Interactions.list_commands(),
+        WitchspaceDiscord.Interactions.list_commands(),
         put_title(%Nostrum.Struct.Embed{}, "Available Commands"),
         &put_field(&2, "/" <> &1.name, &1.description, false)
       )
 
-    %{
-      type: 4,
-      data: %{embeds: [embed]}
-    }
+    respond()
+    |> with_embeds(embed)
+    |> with_ephemeral()
   end
 end

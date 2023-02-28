@@ -23,7 +23,7 @@ defmodule WitchspaceDiscord.Consumer do
 
   def handle_event({:GUILD_CREATE, {_guild}, _ws_state}) do
     :noop
-    # Discord.upsert_guild(Integer.to_string(guild.id))
+    # TODO: Store guild ID
   end
 
   def handle_event({:INTERACTION_CREATE, interaction, _ws_state}) do

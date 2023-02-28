@@ -4,11 +4,7 @@ defmodule WitchspaceDiscord.Common.Interactions.About do
   """
 
   import Nostrum.Struct.Embed
-  alias Nostrum.Struct.{ApplicationCommand, Interaction}
-
-  alias WitchspaceDiscord.InteractionBehaviour
-
-  @behaviour InteractionBehaviour
+  use WitchspaceDiscord.Interaction
 
   @impl InteractionBehaviour
   @spec get_command() :: ApplicationCommand.application_command_map()
@@ -29,10 +25,9 @@ defmodule WitchspaceDiscord.Common.Interactions.About do
       |> put_field("Processes", "#{length(:erlang.processes())}", true)
       |> put_field("Memory Usage", "#{div(:erlang.memory(:total), 1_000_000)} MB", true)
 
-    %{
-      type: 4,
-      data: %{embeds: [embed]}
-    }
+    respond()
+    |> with_embeds(embed)
+    |> with_ephemeral()
   end
 
   defp uptime do
