@@ -7,11 +7,10 @@ defmodule WitchspaceDiscord.Common.Interactions.About do
   use WitchspaceDiscord.Interaction
 
   @impl InteractionBehaviour
-  def get_command,
-    do: %{
-      name: "about",
-      description: "Information about the bot"
-    }
+  def get_command do
+    new_command("about")
+    |> with_desc("Information about the bot")
+  end
 
   @impl InteractionBehaviour
   def handle_interaction(_interaction, _options) do

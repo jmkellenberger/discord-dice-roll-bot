@@ -7,18 +7,16 @@ defmodule WitchspaceDiscord.Dice.Interactions.Roll do
   alias WitchspaceDiscord.Dice.Helpers
 
   @impl InteractionBehaviour
-  def get_command,
-    do: %{
-      name: "roll",
-      description: "Rolls a dice expression",
-      options: [
-        %{
-          type: 3,
-          name: "dice",
-          description: "The dice expression to roll. Ex. 2d6+3"
-        }
-      ]
-    }
+  def get_command do
+    new_command("roll")
+    |> with_desc("Rolls a dice expression.")
+    |> with_option(dice())
+  end
+
+  defp dice do
+    new_option("dice", :str)
+    |> with_desc("The dice expression to roll. Ex: 2d6+3")
+  end
 
   @impl InteractionBehaviour
   def handle_interaction(_interaction, options) do

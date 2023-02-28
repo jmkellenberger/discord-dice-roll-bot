@@ -7,11 +7,10 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
   use WitchspaceDiscord.Interaction
 
   @impl InteractionBehaviour
-  def get_command,
-    do: %{
-      name: "help",
-      description: "Lists available slash commands"
-    }
+  def get_command do
+    new_command("help")
+    |> with_desc("Lists available slash commands")
+  end
 
   @impl InteractionBehaviour
   def handle_interaction(_interaction, _options) do
