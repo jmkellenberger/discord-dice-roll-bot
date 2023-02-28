@@ -9,15 +9,10 @@ defmodule Witchspace.Application do
   def start(_type, _args) do
     children =
       [
-        # Start the Telemetry supervisor
         WitchspaceWeb.Telemetry,
-        # Start the Ecto repository
         Witchspace.Repo,
-        # Start the PubSub system
         {Phoenix.PubSub, name: Witchspace.PubSub},
-        # Start Finch
         {Finch, name: Witchspace.Finch},
-        # Start the Endpoint (http/https)
         WitchspaceWeb.Endpoint
       ]
       |> start_bot(Application.get_env(:witchspace, :env))
@@ -29,14 +24,7 @@ defmodule Witchspace.Application do
   end
 
   defp start_bot(children, :test), do: children
-
-  defp start_bot(children, _env),
-    do:
-      children ++
-        [
-          Nosedrum.Interactor.Dispatcher,
-          WitchspaceDiscord.ConsumerSupervisor
-        ]
+  defp start_bot(children, _env), do: children ++ [WitchspaceDiscord.Consumer]
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.

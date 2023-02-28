@@ -1,29 +1,36 @@
 defmodule WitchspaceDiscord.Consumer do
+  @moduledoc """
+  Consumes events from the Discord API websocket
+  """
+
+  require Logger
   use Nostrum.Consumer
 
-  @guild_id Application.compile_env(:witchspace, :test_guild)
+  alias WitchspaceDiscord.Interactions
 
   def start_link do
     Consumer.start_link(__MODULE__)
   end
 
   def handle_event({:READY, _data, _ws_state}) do
-    register_commands(@guild_id)
+    Interactions.register_commands()
+
+    version = to_string(Application.spec(:witchspace, :vsn))
+    Nostrum.Api.update_status(:online, "on v#{version}")
+
+    Logger.info("Bot started! v#{version}")
+  end
+
+  def handle_event({:GUILD_CREATE, {_guild}, _ws_state}) do
+    :noop
+    # Discord.upsert_guild(Integer.to_string(guild.id))
   end
 
   def handle_event({:INTERACTION_CREATE, interaction, _ws_state}) do
-    Nosedrum.Interactor.Dispatcher.handle_interaction(interaction)
+    Interactions.handle_interaction(interaction)
   end
 
-  def handle_event(_data) do
+  def handle_event({_event, _data, _ws}) do
     :noop
-  end
-
-  defp register_commands(guild_id) do
-    WitchspaceDiscord.Helpers.list_command_modules()
-    |> Enum.each(fn m ->
-      apply(m, :register, [guild_id])
-      :timer.sleep(1500)
-    end)
   end
 end

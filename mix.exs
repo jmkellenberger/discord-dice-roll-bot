@@ -50,7 +50,6 @@ defmodule Witchspace.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:nosedrum, "~> 0.4"},
       {:nostrum, github: "Kraigie/nostrum", override: true},
       {:cowlib, "~> 2.11", hex: :remedy_cowlib, override: true},
       {:droll, path: "../droll"}

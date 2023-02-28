@@ -1,65 +1,88 @@
 defmodule WitchspaceDiscord.Helpers do
-  alias Nostrum.Struct.Interaction
-  @app "WitchspaceDiscord"
-  @command_module "Commands"
+  @moduledoc """
+  Helpers for handling the interaction and options
+  """
 
-  def fetch_campaign(guild_id) do
-    case Witchspace.Campaigns.get_campaign_by_guild_id(guild_id) do
-      %Witchspace.Campaigns.Campaign{} = campaign ->
-        {:ok, campaign}
+  alias Nostrum.Struct.ApplicationCommandInteractionData
 
+  alias WitchspaceDiscord.InteractionBehaviour
+
+
+  @spec parse_interaction_data(ApplicationCommandInteractionData.t()) ::
+          InteractionBehaviour.interaction_input()
+  def parse_interaction_data(interaction_data) when is_binary(interaction_data.custom_id) do
+    [command_string, options_string] = String.split(interaction_data.custom_id, "|")
+
+    options =
+      String.split(options_string, ":")
+      |> Enum.chunk_every(2)
+      |> Enum.reduce([], fn [name, value], acc ->
+        acc ++ [%{name: name, value: value, focused: false}]
+      end)
+
+    {command_string, options}
+  end
+
+  def parse_interaction_data(interaction_data) do
+    options = parse_list_of_options(interaction_data.options)
+
+    {interaction_data.name, options}
+  end
+
+  defp parse_list_of_options(options) when is_nil(options), do: []
+
+  defp parse_list_of_options(options) do
+    Enum.flat_map(options, fn option ->
+      case option.type do
+        1 -> parse_sub_command(option)
+        _ -> [parse_data_option(option)]
+      end
+    end)
+  end
+
+  defp parse_sub_command(option) do
+    [%{name: option.name, value: "", focused: false}] ++ parse_list_of_options(option.options)
+  end
+
+  defp parse_data_option(option) do
+    %{
+      name: option.name,
+      value: option.value,
+      focused: if(is_nil(Map.get(option, :focused)), do: false, else: option.focused)
+    }
+  end
+
+  @spec get_term(InteractionBehaviour.interaction_options()) :: {String.t(), boolean()}
+  def get_term(options) do
+    get_option(options, "term")
+  end
+
+  @spec get_option!(InteractionBehaviour.interaction_options(), String.t()) ::
+          {String.t(), boolean()}
+  def get_option!(options, name) do
+    case get_option(options, name) do
       nil ->
-        {:error, "Campaign not found for guild: ##{guild_id}. Create one with /new_campaign."}
+        raise("Invalid option received")
+
+      option ->
+        option
     end
   end
 
-  def fetch_wallet(guild_id, name) do
-    with {:ok, campaign} <- fetch_campaign(guild_id),
-         %Witchspace.Economy.Wallet{} = wallet <-
-           Witchspace.Economy.get_wallet_by_name(campaign, name) do
-      {:ok, wallet}
-    else
+  @spec get_option(InteractionBehaviour.interaction_options(), String.t()) ::
+          nil | {String.t(), boolean()}
+  def get_option(options, name) do
+    case Enum.find(options, fn opt -> opt.name == name end) do
       nil ->
-        {:error, "Wallet not found with name: #{name}."}
+        nil
 
-      err ->
-        err
+      option ->
+        {option.value, option.focused}
     end
-  end
-
-  def fetch_opt(interaction, opt, default \\ nil)
-
-  def fetch_opt(%Interaction{data: %{options: nil}}, _opt, default),
-    do: default
-
-  def fetch_opt(
-        %Interaction{data: %{options: opts}},
-        opt,
-        default
-      ) do
-    opts
-    |> Enum.filter(&(&1.name == opt))
-    |> List.first(%{})
-    |> Map.get(:value, default)
-  end
-
-  def format_date(%{day: day, year: year}) do
-    "#{day}-#{year}"
-  end
-
-  def format_date_verbose(%{day: day, year: year}) do
-    "Day #{day}, Year #{year}"
   end
 
   def format_changeset_errors(%Ecto.Changeset{errors: errors}) do
     Enum.map(errors, fn {k, {msg, _}} -> "**#{Phoenix.Naming.humanize(k)}**: #{msg}" end)
     |> Enum.join("\n")
-  end
-
-  def list_command_modules() do
-    with {:ok, list} <- :application.get_key(:witchspace, :modules) do
-      list
-      |> Enum.filter(&match?([@app, @command_module, _], &1 |> Module.split() |> Enum.take(3)))
-    end
   end
 end
