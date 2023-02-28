@@ -1,10 +1,10 @@
 defmodule WitchspaceDiscord.Dice.Interactions.Roll do
   @moduledoc """
-  Handles /help slash command
+  Handles /roll slash command
   """
   use WitchspaceDiscord.Interaction
 
-  alias WitchspaceDiscord.{Helpers, Dice}
+  alias WitchspaceDiscord.Dice.Helpers
 
   @impl InteractionBehaviour
   @spec get_command() :: ApplicationCommand.application_command_map()
@@ -30,16 +30,15 @@ defmodule WitchspaceDiscord.Dice.Interactions.Roll do
         nil -> "2d6"
       end
 
-    msg =
-      case Droll.roll(dice) do
-        {:ok, roll} ->
-          Dice.Helpers.format_roll(roll)
+    case Helpers.handle_dice_roll(dice) do
+      {:ok, msg} ->
+        respond()
+        |> with_content(msg)
 
-        {:error, _} ->
-          "Invalid input. Expected expression such as: 2d6, 1d20, 3d6-1. Got #{dice}."
-      end
-
-    respond()
-    |> with_content(msg)
+      {:error, msg} ->
+        respond()
+        |> with_content(msg)
+        |> private()
+    end
   end
 end

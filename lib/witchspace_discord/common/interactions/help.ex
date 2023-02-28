@@ -26,6 +26,6 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
 
     respond()
     |> with_embeds(embed)
-    |> with_ephemeral()
+    |> private()
   end
 end

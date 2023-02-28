@@ -11,7 +11,39 @@ defmodule WitchspaceDiscord.Dice.Helpers do
     "Rolled #{roll.formula}, got: **#{roll.total}** (#{Enum.join(roll.rolls, " + ")}#{format_dice_modifier(roll)})"
   end
 
-  def throw_success?(roll, target, false), do: roll.total >= target
+  def throw_success?(roll, target, "over"), do: roll.total >= target
+  def throw_success?(roll, target, "under"), do: roll.total <= target
 
-  def throw_success?(roll, target, true), do: roll.total <= target
+  def handle_dice_roll(dice) do
+    case Droll.roll(dice) do
+      {:ok, roll} ->
+        {:ok, format_roll(roll)}
+
+      {:error, _} ->
+        {:error, "Invalid input. Expected expression such as: 2d6, 1d20, 3d6-1. Got #{dice}."}
+    end
+  end
+
+  def handle_dice_throw(target, modifier, type) do
+    case Droll.roll("2d6" <> format_dice_modifier(modifier)) do
+      {:ok, roll} ->
+        result =
+          if throw_success?(roll, target, type) do
+            "Success"
+          else
+            "Failure"
+          end
+
+        sign =
+          case type do
+            "over" -> "#{target}+"
+            "under" -> "#{target}-"
+          end
+
+        {:ok, "#{result} vs Target: #{sign}. #{format_roll(roll)}"}
+
+      err ->
+        err
+    end
+  end
 end

@@ -56,8 +56,8 @@ defmodule WitchspaceDiscord.Response do
   @doc """
   Sets Ephemeral bit flag in response.
   """
-  @spec with_ephemeral(resp :: t()) :: t()
-  def with_ephemeral(resp) do
+  @spec private(resp :: t()) :: t()
+  def private(resp) do
     %{resp | data: Map.put(resp.data, :flags, 64)}
   end
 end

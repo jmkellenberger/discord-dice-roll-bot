@@ -27,7 +27,7 @@ defmodule WitchspaceDiscord.Common.Interactions.About do
 
     respond()
     |> with_embeds(embed)
-    |> with_ephemeral()
+    |> private()
   end
 
   defp uptime do
