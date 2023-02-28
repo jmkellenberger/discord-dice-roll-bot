@@ -12,8 +12,8 @@ defmodule WitchspaceDiscord.Consumer do
     Consumer.start_link(__MODULE__)
   end
 
-  def handle_event({:READY, _data, _ws_state}) do
-    Interactions.register_commands()
+  def handle_event({:READY, %{guilds: guilds}, _ws_state}) do
+    Interactions.register_commands(guilds)
 
     version = to_string(Application.spec(:witchspace, :vsn))
     Nostrum.Api.update_status(:online, "on v#{version}")
@@ -22,7 +22,6 @@ defmodule WitchspaceDiscord.Consumer do
   end
 
   def handle_event({:GUILD_CREATE, {_guild}, _ws_state}) do
-    :noop
     # TODO: Store guild ID
   end
 

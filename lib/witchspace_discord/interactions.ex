@@ -25,22 +25,19 @@ defmodule WitchspaceDiscord.Interactions do
     |> Enum.map(& &1.get_command())
   end
 
-  @spec register_commands() :: any()
-  def register_commands do
+  @spec register_commands(guilds :: [%Nostrum.Struct.Guild{}]) :: any()
+  def register_commands(guilds) do
     list_commands()
     |> Enum.reject(&is_nil/1)
-    |> register_commands(Application.get_env(:witchspace, :env))
+    |> register_commands(guilds, Application.get_env(:witchspace, :env))
   end
 
-  defp register_commands(commands, :prod) do
+  defp register_commands(commands, _guilds, :prod) do
     Api.bulk_overwrite_global_application_commands(commands)
   end
 
-  defp register_commands(commands, _env) do
-    case Application.fetch_env(:witchspace, :guild1) do
-      {:ok, guild_id} -> Api.bulk_overwrite_guild_application_commands(guild_id, commands)
-      _ -> :noop
-    end
+  defp register_commands(commands, guilds, _env) do
+    for guild <- guilds, do: Api.bulk_overwrite_guild_application_commands(guild.id, commands)
   end
 
   @spec handle_interaction(Interaction.t()) :: any()
