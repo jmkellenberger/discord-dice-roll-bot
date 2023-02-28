@@ -52,7 +52,7 @@ defmodule Witchspace.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:nostrum, github: "Kraigie/nostrum", override: true},
       {:cowlib, "~> 2.11", hex: :remedy_cowlib, override: true},
-      {:droll, path: "../droll"}
+      {:droll, github: "jmkellenberger/droll"}
     ]
   end
 
