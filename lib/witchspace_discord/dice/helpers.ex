@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Helpers.Dice do
+defmodule WitchspaceDiscord.Dice.Helpers do
   @spec format_dice_modifier(mod :: integer() | Droll.Result.t()) :: String.t()
   def format_dice_modifier(%Droll.Result{modifier: mod}),
     do: format_dice_modifier(mod)

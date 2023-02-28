@@ -8,11 +8,12 @@ defmodule WitchspaceDiscord.Interactions do
   alias Nostrum.Struct.Interaction
 
   alias WitchspaceDiscord.Common.Interactions.{About, Help}
+  alias WitchspaceDiscord.Dice.Interactions.{Roll}
   alias WitchspaceDiscord.Helpers
 
   @spec list_commands :: any()
   def list_commands do
-    [About, Help]
+    [About, Help, Roll]
     |> Enum.map(& &1.get_command())
   end
 
@@ -66,6 +67,9 @@ defmodule WitchspaceDiscord.Interactions do
 
   defp call_interaction(interaction, {"help", opt}),
     do: Help.handle_interaction(interaction, opt)
+
+  defp call_interaction(interaction, {"roll", opt}),
+    do: Roll.handle_interaction(interaction, opt)
 
   defp call_interaction(_interaction, _data),
     do: raise("Unknown command")

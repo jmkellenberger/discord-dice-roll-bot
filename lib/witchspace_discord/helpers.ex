@@ -7,7 +7,6 @@ defmodule WitchspaceDiscord.Helpers do
 
   alias WitchspaceDiscord.InteractionBehaviour
 
-
   @spec parse_interaction_data(ApplicationCommandInteractionData.t()) ::
           InteractionBehaviour.interaction_input()
   def parse_interaction_data(interaction_data) when is_binary(interaction_data.custom_id) do
@@ -50,11 +49,6 @@ defmodule WitchspaceDiscord.Helpers do
       value: option.value,
       focused: if(is_nil(Map.get(option, :focused)), do: false, else: option.focused)
     }
-  end
-
-  @spec get_term(InteractionBehaviour.interaction_options()) :: {String.t(), boolean()}
-  def get_term(options) do
-    get_option(options, "term")
   end
 
   @spec get_option!(InteractionBehaviour.interaction_options(), String.t()) ::
