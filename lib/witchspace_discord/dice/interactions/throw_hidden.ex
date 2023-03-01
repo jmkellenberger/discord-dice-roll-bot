@@ -4,18 +4,18 @@ defmodule WitchspaceDiscord.Dice.Interactions.ThrowHidden do
   """
   use WitchspaceDiscord.Interaction
 
-  alias WitchspaceDiscord.Dice.Interactions.Throw
+  alias WitchspaceDiscord.Dice
 
   @impl InteractionBehaviour
   def get_command do
-    Throw.get_command()
-    |> with_name("tpriv")
+    command("tpriv")
     |> with_desc("Privately throws 2D against a target number.")
+    |> with_options(Dice.throw_opts())
   end
 
   @impl InteractionBehaviour
   def handle_interaction(interaction, options) do
-    Throw.handle_interaction(interaction, options)
+    Dice.handle_throw(interaction, options)
     |> private()
   end
 end

@@ -8,7 +8,7 @@ defmodule WitchspaceDiscord.Common.Interactions.About do
 
   @impl InteractionBehaviour
   def get_command do
-    new_command("about")
+    command("about")
     |> with_desc("Information about the bot")
   end
 
@@ -22,8 +22,7 @@ defmodule WitchspaceDiscord.Common.Interactions.About do
       |> put_field("Processes", "#{length(:erlang.processes())}", true)
       |> put_field("Memory Usage", "#{div(:erlang.memory(:total), 1_000_000)} MB", true)
 
-    respond()
-    |> with_embeds(embed)
+    respond(embed)
     |> private()
   end
 

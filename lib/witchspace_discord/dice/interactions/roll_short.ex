@@ -4,19 +4,18 @@ defmodule WitchspaceDiscord.Dice.Interactions.RollShort do
   """
   use WitchspaceDiscord.Interaction
 
-  alias WitchspaceDiscord.Dice.Helpers
+  alias Witchspace.Dice
 
   @impl InteractionBehaviour
   def get_command do
-    new_command("r")
+    command("r")
     |> with_desc("Quickly roll 2D")
   end
 
   @impl InteractionBehaviour
   def handle_interaction(_interaction, _options) do
-    {:ok, msg} = Helpers.handle_dice_roll("2d6")
+    {:ok, msg} = Dice.parse("2d6")
 
-    respond()
-    |> with_content(msg)
+    respond(msg)
   end
 end

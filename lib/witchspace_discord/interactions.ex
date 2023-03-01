@@ -25,7 +25,7 @@ defmodule WitchspaceDiscord.Interactions do
     |> Enum.map(& &1.get_command())
   end
 
-  @spec register_commands(guilds :: [%Nostrum.Struct.Guild{}]) :: any()
+  @spec register_commands(guilds :: [Nostrum.Struct.Guild.t()]) :: any()
   def register_commands(guilds) do
     list_commands()
     |> Enum.reject(&is_nil/1)

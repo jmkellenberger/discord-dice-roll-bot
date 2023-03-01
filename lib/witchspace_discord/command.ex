@@ -32,7 +32,7 @@ defmodule WitchspaceDiscord.Command do
   def with_name(cmd, name), do: Map.put(cmd, :name, name)
   def with_desc(cmd, desc), do: Map.put(cmd, :description, desc)
 
-  def new_command(name) do
+  def command(name) do
     name
     |> clean_name()
     |> new()
@@ -41,7 +41,9 @@ defmodule WitchspaceDiscord.Command do
   def with_option(%{options: opts} = cmd, option), do: %{cmd | options: opts ++ [option]}
   def with_option(cmd, option), do: Map.put(cmd, :options, [option])
 
-  def new_option(name, type) do
+  def with_options(cmd, opts), do: Enum.reduce(opts, cmd, &with_option(&2, &1))
+
+  def option(name, type) do
     name
     |> clean_name()
     |> new()
@@ -51,14 +53,16 @@ defmodule WitchspaceDiscord.Command do
   def with_type(opt, type), do: Map.put(opt, :type, @option_types[type])
 
   def with_choice(%{choices: choices} = opt, name, value),
-    do: %{opt | choices: choices ++ [new_choice(name, value)]}
+    do: %{opt | choices: choices ++ [choice(name, value)]}
 
   def with_choice(opt, name, value),
-    do: Map.put(opt, :choices, [new_choice(name, value)])
+    do: Map.put(opt, :choices, [choice(name, value)])
+
+  def with_choice(opt, name), do: with_choice(opt, name, String.downcase(name))
 
   def required(opt), do: Map.put(opt, :required, true)
 
-  def new_choice(name, value) do
+  def choice(name, value) do
     name
     |> new()
     |> with_value(value)

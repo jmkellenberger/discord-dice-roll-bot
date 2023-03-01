@@ -1,4 +1,7 @@
-defmodule WitchspaceDiscord.Dice.Helpers do
+defmodule Witchspace.Dice do
+  @moduledoc """
+  Dice formatting and rolling helpers
+  """
   @spec format_dice_modifier(mod :: integer() | Droll.Result.t()) :: String.t()
   def format_dice_modifier(%Droll.Result{modifier: mod}),
     do: format_dice_modifier(mod)
@@ -14,7 +17,7 @@ defmodule WitchspaceDiscord.Dice.Helpers do
   def throw_success?(roll, target, "over"), do: roll.total >= target
   def throw_success?(roll, target, "under"), do: roll.total <= target
 
-  def handle_dice_roll(dice) do
+  def parse(dice) do
     case Droll.roll(dice) do
       {:ok, roll} ->
         {:ok, format_roll(roll)}
@@ -24,7 +27,7 @@ defmodule WitchspaceDiscord.Dice.Helpers do
     end
   end
 
-  def handle_dice_throw(target, modifier, type) do
+  def throw(target, modifier, type) do
     case Droll.roll("2d6" <> format_dice_modifier(modifier)) do
       {:ok, roll} ->
         result =

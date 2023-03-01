@@ -4,7 +4,7 @@ defmodule WitchspaceDiscord.Response do
   """
   @type t() :: %{
           type: interaction_callback_value(),
-          data: Map.t()
+          data: map()
         }
 
   @type interaction_callback_value() :: 1 | 4..9
@@ -28,13 +28,35 @@ defmodule WitchspaceDiscord.Response do
   }
 
   @doc """
+  Fetches an option value from an interaction by name
+  """
+  def get_option(options, name) do
+    case Enum.find(options, fn opt -> opt.name == name end) do
+      nil ->
+        nil
+
+      option ->
+        {option.value, option.focused}
+    end
+  end
+
+  @doc """
   Builds empty response of given type
   """
-  @spec respond(type :: interaction_callback_type()) :: t()
-  def respond(type \\ :message) do
+  @spec response(type :: interaction_callback_type()) :: t()
+  def response(type \\ :message) do
     %{}
     |> Map.put(:type, @callback_types[type])
     |> Map.put(:data, Map.new())
+  end
+
+  @spec respond(Nostrum.Struct.Embed.t() | String.t()) :: t()
+  def respond(%Nostrum.Struct.Embed{} = embed) do
+    response() |> with_embeds(embed)
+  end
+
+  def respond(content) when is_binary(content) do
+    response() |> with_content(content)
   end
 
   @doc """
@@ -48,7 +70,7 @@ defmodule WitchspaceDiscord.Response do
   @doc """
   Puts embeds into response body.
   """
-  @spec with_embeds(resp :: t(), embeds :: Nostrum.Struct.Embed) :: t()
+  @spec with_embeds(resp :: t(), embeds :: Nostrum.Struct.Embed.t()) :: t()
   def with_embeds(resp, embeds) do
     %{resp | data: Map.put(resp.data, :embeds, [embeds])}
   end

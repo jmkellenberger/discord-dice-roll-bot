@@ -40,8 +40,7 @@ defmodule WitchspaceDiscord.Campaign.Interactions.Campaign do
 
   @impl InteractionBehaviour
   def handle_interaction(_interaction, _options) do
-    respond()
-    |> with_content("This feature isn't implemented yet!")
+    respond("This feature isn't implemented yet!")
     |> private()
   end
 end

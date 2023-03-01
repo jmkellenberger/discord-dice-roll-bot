@@ -8,7 +8,7 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
 
   @impl InteractionBehaviour
   def get_command do
-    new_command("help")
+    command("help")
     |> with_desc("Lists available slash commands")
   end
 
@@ -21,8 +21,7 @@ defmodule WitchspaceDiscord.Common.Interactions.Help do
         &put_field(&2, "/" <> &1.name, &1.description, false)
       )
 
-    respond()
-    |> with_embeds(embed)
+    respond(embed)
     |> private()
   end
 end
