@@ -7,12 +7,11 @@ defmodule WitchspaceDiscord.Dice.Interactions.ThrowHidden do
   alias WitchspaceDiscord.Dice.Interactions.Throw
 
   @impl InteractionBehaviour
-  def get_command,
-    do: %{
-      Throw.get_command()
-      | name: "tpriv",
-        description: "Privately throws 2D against a target number."
-    }
+  def get_command do
+    Throw.get_command()
+    |> with_name("tpriv")
+    |> with_desc("Privately throws 2D against a target number.")
+  end
 
   @impl InteractionBehaviour
   def handle_interaction(interaction, options) do

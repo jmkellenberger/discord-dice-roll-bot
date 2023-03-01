@@ -6,8 +6,11 @@ defmodule WitchspaceDiscord.Dice.Interactions.RollHidden do
   alias WitchspaceDiscord.Dice.Interactions.Roll
 
   @impl InteractionBehaviour
-  def get_command,
-    do: %{Roll.get_command() | name: "rpriv", description: "Privately rolls a dice expression"}
+  def get_command do
+    Roll.get_command()
+    |> with_name("rpriv")
+    |> with_desc("Privately rolls a dice expression")
+  end
 
   @impl InteractionBehaviour
   def handle_interaction(interaction, options) do

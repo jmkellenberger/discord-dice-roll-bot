@@ -7,39 +7,31 @@ defmodule WitchspaceDiscord.Dice.Interactions.Throw do
   alias WitchspaceDiscord.Dice.Helpers
 
   @impl InteractionBehaviour
-  def get_command,
-    do: %{
-      name: "throw",
-      description: "Throws 2D against a target number.",
-      options: [
-        %{
-          type: 4,
-          name: "target",
-          description: "The target number to roll against.",
-          required: true
-        },
-        %{
-          type: 4,
-          name: "modifier",
-          description: "The dice modifier"
-        },
-        %{
-          name: "type",
-          description: "What type of throw",
-          type: 3,
-          choices: [
-            %{
-              name: "Over",
-              value: "over"
-            },
-            %{
-              name: "Under",
-              value: "under"
-            }
-          ]
-        }
-      ]
-    }
+  def get_command do
+    new_command("throw")
+    |> with_desc("Throws 2D against a target number")
+    |> with_option(target())
+    |> with_option(modifier())
+    |> with_option(type())
+  end
+
+  defp target do
+    new_option("target", :int)
+    |> with_desc("Target number to roll against.")
+    |> required()
+  end
+
+  defp modifier do
+    new_option("modifier", :int)
+    |> with_desc("The dice modifier, if any")
+  end
+
+  defp type() do
+    new_option("type", :str)
+    |> with_desc("The type of throw")
+    |> with_choice("Over", "over")
+    |> with_choice("Under", "under")
+  end
 
   @impl InteractionBehaviour
   def handle_interaction(_interaction, options) do

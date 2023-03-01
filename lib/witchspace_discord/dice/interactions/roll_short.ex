@@ -7,11 +7,10 @@ defmodule WitchspaceDiscord.Dice.Interactions.RollShort do
   alias WitchspaceDiscord.Dice.Helpers
 
   @impl InteractionBehaviour
-  def get_command,
-    do: %{
-      name: "r",
-      description: "Quickly roll 2d6"
-    }
+  def get_command do
+    new_command("r")
+    |> with_desc("Quickly roll 2D")
+  end
 
   @impl InteractionBehaviour
   def handle_interaction(_interaction, _options) do

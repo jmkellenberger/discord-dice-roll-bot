@@ -24,7 +24,7 @@ defmodule Witchspace.Application do
   end
 
   defp start_bot(children, :test), do: children
-  defp start_bot(children, _env), do: children ++ [WitchspaceDiscord.Consumer]
+  defp start_bot(children, _env), do: children ++ [WitchspaceDiscord.Supervisor]
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
