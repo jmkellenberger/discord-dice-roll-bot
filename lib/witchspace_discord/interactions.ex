@@ -8,26 +8,33 @@ defmodule WitchspaceDiscord.Interactions do
   alias Nostrum.Struct.Interaction
 
   alias WitchspaceDiscord.Common.Interactions.{About, Help}
-  alias WitchspaceDiscord.Campaign.Interactions.{Campaign}
+  alias WitchspaceDiscord.Campaign.Interactions.Campaign
 
   alias WitchspaceDiscord.Dice.Interactions.{
     Roll,
     RollHidden,
-    RollShort,
     Throw,
-    ThrowHidden,
-    ThrowShort
+    ThrowHidden
   }
 
-  @spec list_commands :: any()
-  def list_commands do
-    [About, Campaign, Help, Roll, RollHidden, RollShort, Throw, ThrowHidden, ThrowShort]
-    |> Enum.map(& &1.get_command())
-  end
+  @commands [
+    About,
+    Campaign,
+    Help,
+    Roll,
+    RollHidden,
+    Throw,
+    ThrowHidden
+  ]
 
-  @spec register_commands(guilds :: [Nostrum.Struct.Guild.t()]) :: any()
+  @spec list_commands :: [module]
+  def list_commands, do: @commands
+
+  @spec register_commands(guilds :: [Nostrum.Struct.Guild.t()]) ::
+          {:ok, [map]} | {:error, [map]}
   def register_commands(guilds) do
-    list_commands()
+    @commands
+    |> Enum.map(& &1.get_command())
     |> Enum.reject(&is_nil/1)
     |> register_commands(guilds, Application.get_env(:witchspace, :env))
   end
@@ -37,7 +44,8 @@ defmodule WitchspaceDiscord.Interactions do
   end
 
   defp register_commands(commands, guilds, _env) do
-    for guild <- guilds, do: Api.bulk_overwrite_guild_application_commands(guild.id, commands)
+    for guild <- guilds,
+        do: Api.bulk_overwrite_guild_application_commands(guild.id, commands)
   end
 
   @spec handle_interaction(Interaction.t()) :: any()
@@ -82,17 +90,11 @@ defmodule WitchspaceDiscord.Interactions do
   defp call_interaction(interaction, {"rpriv", opt}),
     do: RollHidden.handle_interaction(interaction, opt)
 
-  defp call_interaction(interaction, {"r", opt}),
-    do: RollShort.handle_interaction(interaction, opt)
-
   defp call_interaction(interaction, {"throw", opt}),
     do: Throw.handle_interaction(interaction, opt)
 
   defp call_interaction(interaction, {"tpriv", opt}),
     do: ThrowHidden.handle_interaction(interaction, opt)
-
-  defp call_interaction(interaction, {"t", opt}),
-    do: ThrowShort.handle_interaction(interaction, opt)
 
   defp call_interaction(_interaction, _data),
     do: raise("Unknown command")

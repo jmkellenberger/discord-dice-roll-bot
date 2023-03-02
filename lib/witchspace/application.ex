@@ -7,24 +7,24 @@ defmodule Witchspace.Application do
 
   @impl true
   def start(_type, _args) do
-    children =
-      [
-        WitchspaceWeb.Telemetry,
-        Witchspace.Repo,
-        {Phoenix.PubSub, name: Witchspace.PubSub},
-        {Finch, name: Witchspace.Finch},
-        WitchspaceWeb.Endpoint
-      ]
-      |> start_bot(Application.get_env(:witchspace, :env))
-
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Witchspace.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children(), opts)
   end
 
-  defp start_bot(children, :test), do: children
-  defp start_bot(children, _env), do: children ++ [WitchspaceDiscord.Supervisor]
+  defp children() do
+    children = [
+      WitchspaceWeb.Telemetry,
+      Witchspace.Repo,
+      {Phoenix.PubSub, name: Witchspace.PubSub},
+      {Finch, name: Witchspace.Finch},
+      WitchspaceWeb.Endpoint
+    ]
+
+    case Application.get_env(:witchspace, :env) do
+      :test -> children
+      _ -> children ++ [WitchspaceDiscord.Supervisor]
+    end
+  end
 
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.

@@ -3,34 +3,50 @@ defmodule WitchspaceDiscord.Dice do
   Common option and response builders for dice commands
   """
   alias Witchspace.Dice
-  import WitchspaceDiscord.{Command, Response}
+  import WitchspaceDiscord.Interaction.{Command, Response}
 
   def dice_input do
-    option("dice", :str)
-    |> with_desc("The dice expression to roll. Ex: 2d6+3")
+    option(
+      "dice",
+      "The dice expression to roll. Ex: 2d6+3",
+      :str
+    )
   end
 
-  def throw_opts, do: [target_input(), modifier_input(), type_input()]
+  def throw_opts do
+    [
+      target_input(),
+      modifier_input(),
+      type_input()
+    ]
+  end
 
   def target_input do
-    option("target", :int)
-    |> with_desc("Target number to roll against.")
-    |> required()
+    required_option(
+      "target",
+      "Target number to roll against.",
+      :int
+    )
   end
 
   def modifier_input do
-    option("modifier", :int)
-    |> with_desc("The dice modifier, if any")
+    option(
+      "modifier",
+      "The dice modifier, if any",
+      :int
+    )
   end
 
   def type_input do
-    option("type", :str)
-    |> with_desc("The type of throw")
-    |> with_choice("Over")
-    |> with_choice("Under")
+    option(
+      "type",
+      "The type of throw",
+      :str,
+      [~w/Over Under/]
+    )
   end
 
-  def handle_roll(_interaction, options) do
+  def handle_roll(options) do
     dice =
       case get_option(options, "dice") do
         {dice, _autocomplete} -> dice
@@ -39,15 +55,16 @@ defmodule WitchspaceDiscord.Dice do
 
     case Dice.parse(dice) do
       {:ok, msg} ->
-        respond(msg)
+        response(msg)
 
       {:error, msg} ->
-        respond(msg)
+        msg
+        |> response()
         |> private()
     end
   end
 
-  def handle_throw(_interaction, options) do
+  def handle_throw(options) do
     {target, _autocomplete} = get_option(options, "target")
 
     modifier =
@@ -64,10 +81,11 @@ defmodule WitchspaceDiscord.Dice do
 
     case Dice.throw(target, modifier, type) do
       {:ok, msg} ->
-        respond(msg)
+        response(msg)
 
       {:error, err} ->
-        respond(err)
+        err
+        |> response()
         |> private()
     end
   end

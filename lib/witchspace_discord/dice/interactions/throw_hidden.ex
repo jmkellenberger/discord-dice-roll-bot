@@ -2,20 +2,17 @@ defmodule WitchspaceDiscord.Dice.Interactions.ThrowHidden do
   @moduledoc """
   Handles /tpriv slash command
   """
+  @name "tpriv"
+  @description "Privately throws 2D against a target number."
+
   use WitchspaceDiscord.Interaction
 
   alias WitchspaceDiscord.Dice
 
-  @impl InteractionBehaviour
-  def get_command do
-    command("tpriv")
-    |> with_desc("Privately throws 2D against a target number.")
-    |> with_options(Dice.throw_opts())
-  end
+  @impl Interaction
+  def options, do: Dice.throw_opts()
 
-  @impl InteractionBehaviour
-  def handle_interaction(interaction, options) do
-    Dice.handle_throw(interaction, options)
-    |> private()
-  end
+  @impl Interaction
+  def handle_interaction(_interaction, options),
+    do: private(Dice.handle_throw(options))
 end

@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Response do
+defmodule WitchspaceDiscord.Interaction.Response do
   @moduledoc """
   Helper module for building interaction responses
   """
@@ -43,35 +43,39 @@ defmodule WitchspaceDiscord.Response do
   @doc """
   Builds empty response of given type
   """
-  @spec response(type :: interaction_callback_type()) :: t()
-  def response(type \\ :message) do
+  @spec response(
+          msg :: Nostrum.Struct.Embed.t() | String.t(),
+          type :: interaction_callback_type()
+        ) :: t()
+  def response(msg, type \\ :message)
+
+  def response(%Nostrum.Struct.Embed{} = msg, type) do
+    %{}
+    |> Map.put(:type, @callback_types[type])
+    |> Map.put(:data, %{})
+    |> put_embeds(msg)
+  end
+
+  def response(msg, type) when is_binary(msg) do
     %{}
     |> Map.put(:type, @callback_types[type])
     |> Map.put(:data, Map.new())
-  end
-
-  @spec respond(Nostrum.Struct.Embed.t() | String.t()) :: t()
-  def respond(%Nostrum.Struct.Embed{} = embed) do
-    response() |> with_embeds(embed)
-  end
-
-  def respond(content) when is_binary(content) do
-    response() |> with_content(content)
+    |> put_content(msg)
   end
 
   @doc """
   Puts message into response body.
   """
-  @spec with_content(resp :: t(), content :: String.t()) :: t()
-  def with_content(resp, content) do
+  @spec put_content(resp :: t(), content :: String.t()) :: t()
+  def put_content(resp, content) do
     %{resp | data: Map.put(resp.data, :content, content)}
   end
 
   @doc """
   Puts embeds into response body.
   """
-  @spec with_embeds(resp :: t(), embeds :: Nostrum.Struct.Embed.t()) :: t()
-  def with_embeds(resp, embeds) do
+  @spec put_embeds(resp :: t(), embeds :: Nostrum.Struct.Embed.t()) :: t()
+  def put_embeds(resp, embeds) do
     %{resp | data: Map.put(resp.data, :embeds, [embeds])}
   end
 

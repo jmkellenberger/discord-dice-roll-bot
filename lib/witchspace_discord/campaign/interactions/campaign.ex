@@ -3,13 +3,16 @@ defmodule WitchspaceDiscord.Campaign.Interactions.Campaign do
   Handles /campaign command group
   """
 
+  @name "campaign"
+  @description "Campaign management commands"
+
   use WitchspaceDiscord.Interaction
 
-  @impl InteractionBehaviour
+  @impl Interaction
   def get_command,
     do: %{
-      name: "campaign",
-      description: "Campaign management commands",
+      name: @name,
+      description: @description,
       options: [
         %{
           name: "time",
@@ -38,9 +41,8 @@ defmodule WitchspaceDiscord.Campaign.Interactions.Campaign do
       ]
     }
 
-  @impl InteractionBehaviour
+  @impl Interaction
   def handle_interaction(_interaction, _options) do
-    respond("This feature isn't implemented yet!")
-    |> private()
+    private(response("This feature isn't implemented yet!"))
   end
 end

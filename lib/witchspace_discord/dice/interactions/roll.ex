@@ -2,19 +2,15 @@ defmodule WitchspaceDiscord.Dice.Interactions.Roll do
   @moduledoc """
   Handles /roll slash command
   """
-  use WitchspaceDiscord.Interaction
+  @name "roll"
+  @description "Rolls a dice expression."
 
+  use WitchspaceDiscord.Interaction
   alias WitchspaceDiscord.Dice
 
-  @impl InteractionBehaviour
-  def get_command do
-    command("roll")
-    |> with_desc("Rolls a dice expression.")
-    |> with_option(Dice.dice_input())
-  end
+  @impl Interaction
+  def options, do: Dice.dice_input()
 
-  @impl InteractionBehaviour
-  def handle_interaction(interaction, options) do
-    Dice.handle_roll(interaction, options)
-  end
+  @impl Interaction
+  def handle_interaction(_interaction, options), do: Dice.handle_roll(options)
 end

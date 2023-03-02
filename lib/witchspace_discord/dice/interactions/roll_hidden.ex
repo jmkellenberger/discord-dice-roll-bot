@@ -2,19 +2,16 @@ defmodule WitchspaceDiscord.Dice.Interactions.RollHidden do
   @moduledoc """
   Handles /rpriv slash command
   """
-  use WitchspaceDiscord.Interaction
+  @name "rpriv"
+  @description "Privately rolls a dice expression."
+
   alias WitchspaceDiscord.Dice
+  use WitchspaceDiscord.Interaction
 
-  @impl InteractionBehaviour
-  def get_command do
-    command("rpriv")
-    |> with_desc("Privately rolls a dice expression")
-    |> with_option(Dice.dice_input())
-  end
+  @impl Interaction
+  def options, do: Dice.dice_input()
 
-  @impl InteractionBehaviour
-  def handle_interaction(interaction, options) do
-    Dice.handle_roll(interaction, options)
-    |> private()
-  end
+  @impl Interaction
+  def handle_interaction(_interaction, options),
+    do: private(Dice.handle_roll(options))
 end
