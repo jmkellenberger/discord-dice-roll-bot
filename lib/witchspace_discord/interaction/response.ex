@@ -40,6 +40,10 @@ defmodule WitchspaceDiscord.Interaction.Response do
     end
   end
 
+  @spec get_user_id(Nostrum.Struct.Interaction.t()) :: integer | nil
+  def get_user_id(%{member: %{user: %{id: id}}}), do: id
+  def get_user_id(_interaction), do: nil
+
   @doc """
   Builds empty response of given type
   """

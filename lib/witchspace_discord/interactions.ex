@@ -7,7 +7,7 @@ defmodule WitchspaceDiscord.Interactions do
   alias Nostrum.Api
   alias Nostrum.Struct.Interaction
 
-  alias WitchspaceDiscord.Common.Interactions.{About, Help}
+  alias WitchspaceDiscord.Common.Interactions.{About, Help, Thank}
   alias WitchspaceDiscord.Campaign.Interactions.Campaign
 
   alias WitchspaceDiscord.Dice.Interactions.{
@@ -23,6 +23,7 @@ defmodule WitchspaceDiscord.Interactions do
     Help,
     Roll,
     RollHidden,
+    Thank,
     Throw,
     ThrowHidden
   ]
@@ -89,6 +90,9 @@ defmodule WitchspaceDiscord.Interactions do
 
   defp call_interaction(interaction, {"rpriv", opt}),
     do: RollHidden.handle_interaction(interaction, opt)
+
+  defp call_interaction(interaction, {"thank", opt}),
+    do: Thank.handle_interaction(interaction, opt)
 
   defp call_interaction(interaction, {"throw", opt}),
     do: Throw.handle_interaction(interaction, opt)
