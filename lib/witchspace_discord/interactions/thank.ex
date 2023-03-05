@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Common.Interactions.Thank do
+defmodule WitchspaceDiscord.Interactions.Thank do
   @moduledoc """
   Thanks ASEMA
   """

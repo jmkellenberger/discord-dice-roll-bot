@@ -7,25 +7,15 @@ defmodule WitchspaceDiscord.Interactions do
   alias Nostrum.Api
   alias Nostrum.Struct.Interaction
 
-  alias WitchspaceDiscord.Common.Interactions.{About, Help, Thank}
-  alias WitchspaceDiscord.Campaign.Interactions.Campaign
-
-  alias WitchspaceDiscord.Dice.Interactions.{
-    Roll,
-    RollHidden,
-    Throw,
-    ThrowHidden
-  }
+  alias WitchspaceDiscord.Common.Interactions.{About, Help, Thank, Roll, Check, Campaign}
 
   @commands [
     About,
     Campaign,
     Help,
     Roll,
-    RollHidden,
     Thank,
-    Throw,
-    ThrowHidden
+    Check
   ]
 
   @spec list_commands :: [module]
@@ -88,17 +78,11 @@ defmodule WitchspaceDiscord.Interactions do
   defp call_interaction(interaction, {"roll", opt}),
     do: Roll.handle_interaction(interaction, opt)
 
-  defp call_interaction(interaction, {"rpriv", opt}),
-    do: RollHidden.handle_interaction(interaction, opt)
-
   defp call_interaction(interaction, {"thank", opt}),
     do: Thank.handle_interaction(interaction, opt)
 
-  defp call_interaction(interaction, {"throw", opt}),
-    do: Throw.handle_interaction(interaction, opt)
-
-  defp call_interaction(interaction, {"tpriv", opt}),
-    do: ThrowHidden.handle_interaction(interaction, opt)
+  defp call_interaction(interaction, {"check", opt}),
+    do: Check.handle_interaction(interaction, opt)
 
   defp call_interaction(_interaction, _data),
     do: raise("Unknown command")

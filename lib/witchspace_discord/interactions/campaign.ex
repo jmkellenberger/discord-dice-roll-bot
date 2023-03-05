@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Campaign.Interactions.Campaign do
+defmodule WitchspaceDiscord.Interactions.Campaign do
   @moduledoc """
   Handles /campaign command group
   """

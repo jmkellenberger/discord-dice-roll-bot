@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Common.Interactions.Help do
+defmodule WitchspaceDiscord.Interactions.Help do
   @moduledoc """
   Handles /help slash command
   """

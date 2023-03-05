@@ -1,4 +1,4 @@
-defmodule WitchspaceDiscord.Common.Interactions.About do
+defmodule WitchspaceDiscord.Interactions.About do
   @moduledoc """
   Handles /about slash command
   """
